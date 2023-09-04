@@ -1,0 +1,159 @@
+from flask import Flask, render_template, request,session,redirect
+import requests
+import hashlib 
+import ipaddress
+import secrets
+registered_users = {
+    "username": "password"
+}
+
+app = Flask(__name__)
+app.secret_key = secrets.token_hex(32) 
+
+VIRUSTOTAL_API_KEY = "8728d6ff1bf8edd0a97c8ab2a361737c2c939b9b9005f7452b39fa80d97cffae"
+ABUSEIPDB_API_KEY = "88cad5942bfd57d22c7dbc1b4a2462657da414d4f6b6792f71e9b00558eb0b811dff780606d40d3b"
+URLSCAN_API_KEY = "e1e1a04b-3fed-48a6-a655-14ac59c88ec1"
+
+def check_virus_total_ip(ip_address):
+    url = f"https://www.virustotal.com/api/v3/search?query={ip_address}"
+    headers = {
+        "accept": "application/json",
+        "x-apikey": VIRUSTOTAL_API_KEY
+    }
+    response = requests.get(url, headers=headers)
+    return response.json()
+
+def check_virus_total_domain(domain):
+    url = "https://www.virustotal.com/api/v3/search?query=" + domain
+
+    headers = {
+        "accept": "application/json",
+        "x-apikey": VIRUSTOTAL_API_KEY
+    }
+
+    response = requests.get(url, headers=headers)
+    return response.json()
+
+def check_abuseipdb_ip(ip_address):
+    url = 'https://api.abuseipdb.com/api/v2/check'
+    querystring = {
+        'ipAddress': ip_address,
+        'maxAgeInDays': '90'
+    }
+    headers = {
+        'accept': 'application/json',
+        'Key': ABUSEIPDB_API_KEY
+    }
+    response = requests.get(url=url, headers=headers, params=querystring)
+    return response.json()
+
+def check_URLSCAN_IP(ip_address):
+    url = f"https://urlscan.io/api/v1/search/?q=domain:{ip_address}"
+    headers = {
+        "accept": "application/json",
+        "x-apikey": URLSCAN_API_KEY
+    }
+    response = requests.get(url, headers=headers)
+    return response.json()
+
+def check_URLSCAN_domain(domain):
+    url = "https://urlscan.io/api/v1/search/?q=domain:" + domain
+
+    headers = {
+        "accept": "application/json",
+        "x-apikey": URLSCAN_API_KEY
+    }
+
+    response = requests.get(url, headers=headers)
+    return response.json()
+
+def hash_file(filename):
+    sha1_hash = hashlib.sha1()
+    sha256_hash = hashlib.sha256()
+    md5_hash = hashlib.md5()
+
+    with open(filename, 'rb') as file:
+        chunk = 0
+        while chunk != b'':
+            chunk = file.read(1024)
+            sha1_hash.update(chunk)
+            sha256_hash.update(chunk)
+            md5_hash.update(chunk)
+
+    return sha1_hash.hexdigest(), sha256_hash.hexdigest(), md5_hash.hexdigest()
+
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+
+        if username in registered_users and registered_users[username] == password:
+            session["logged_in"] = True
+            return redirect("/")
+        else:
+            return "Login failed"
+    if "logged_in" in session:  
+        return redirect("/")  
+    return render_template("login.html")
+@app.route("/register", methods=["GET","POST"])
+def register():
+    if request.method == "POST":
+        username = request.form.get("username")
+        password = request.form.get("password")
+        if username in registered_users:
+            return "Username already taken"
+        registered_users[username] = password
+        return "Registration successful. <a href ='/login'>Login</a>"
+    return render_template("register.html")
+
+
+@app.route("/", methods=["GET", "POST"])
+def main():
+    if "logged_in" in session:
+        virus_total_info = None
+        abuseipdb_info = None
+        urlscan_info = None
+        sha1_hash = None
+        sha256_hash = None
+        md5_hash = None
+
+        if request.method == "POST":
+            search_query = request.form.get("address")
+
+            try:
+                ipaddress.ip_address(search_query)
+                is_ip_address = True
+            except ValueError:
+             is_ip_address = False
+
+            if is_ip_address:
+                virus_total_info = check_virus_total_ip(search_query)
+                abuseipdb_info = check_abuseipdb_ip(search_query)
+                urlscan_info = check_URLSCAN_IP(search_query)
+            else:
+                if search_query:
+                    virus_total_info = check_virus_total_domain(search_query)
+                    urlscan_info = check_URLSCAN_domain(search_query)
+            if "file" in request.files:
+                file = request.files["file"]
+                if file:
+                    file.save("uploaded_file.tmp")  
+                    sha1_hash, sha256_hash, md5_hash = hash_file("uploaded_file.tmp")
+        return render_template (
+                "main.html",
+                logged_in=session.get("logged_in"),
+                virus_total_info=virus_total_info,
+                abuseipdb_info=abuseipdb_info,
+                urlscan_info=urlscan_info,
+                sha1_hash=sha1_hash,
+                sha256_hash=sha256_hash,
+                md5_hash=md5_hash,
+                )
+        
+    else:
+        return redirect("/login")
+
+if __name__ == '__main__':
+    app.run(host='0.0.0.0', port=8080,debug=True)
