@@ -1,0 +1,13 @@
+# AppPython
+The "CDN TOOL: Crafting, Delving, Navigating the Network" application consists of combining a flask with html in order to obtain information about ips, domains, hashes, being
+connected to the APIs of the 3 programs, these being: Virus Total, AbuseIpdb and UrlScan.
+In order to generate my information, calls made on the basis of APIs are registered in the database of the programs, thus for any ip, domain, hash searched,
+you will receive details about the respective searches.
+
+The Flask was divided into several types, so that for the searched IP addresses, the search will be on the 3 programs (AbuseIpdb, VirusTotal and UrlScan),
+for domains on 2 programs (VirusTotal and UrlScan), and respectively the hashes on a single program, this being VirusTotal.
+I used the "host'0.0.0.0'" method to contain all possible addresses and respectively port 8080.
+I configured my own firewall to expose the application on other devices as well, the port being the one initiated in flask, at the same time checking the communication between the ip address and the port through the SOCKET.
+I checked the connection of the IP address by means of PING, seeing the hops made by TTL.
+
+For the exposure on other devices, I use Windows PowerShell, in the script I have entered only the Vendors that I consider important for the purpose of the presented details.
