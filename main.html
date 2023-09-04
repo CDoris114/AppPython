@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>IP and Domain Checker</title>
+</head>
+<body>
+    <style>
+        .green-result {
+            color: green;
+        }
+        .green-screenshot{
+            color: red;
+        }
+        .blue-category{
+            color: blue;
+        }
+        .red-RegDate{
+            color:red 
+        }
+        body {
+    height: 400px;
+    width: 80%;
+    background-image: url("https://avatars.mds.yandex.net/i?id=d9e1d2f39663a01e56841301035280da2f127835-5100208-images-thumbs&n=13");
+    background-repeat: no-repeat, no-repeat;
+   background-position: right; 
+ }
+ 
+   </style> 
+    <h1>Verify ip/domain/hash</h1>
+    <div>
+        <form method="post" action="/">
+            <label for="address">Enter IP Address or Domain:</label>
+            <input type="text" id="address" name="address" required>
+            <button type="submit">Check</button>
+        </form>
+    </div>
+    <div>
+        <form method="post" action="/" enctype="multipart/form-data">
+            <label for="file">Upload File:</label>
+            <input type="file" id="file" name="file" required>
+            <button type="submit">Check File</button>
+        </form>
+    </div>
+    <div id="response">
+        <ul id="response-list">
+            <h2>Response:</h2>
+            {% if virus_total_info %}
+                <li>
+                    <h3 style="color:red">VirusTotal</h3>
+                    <ul>
+                        {% if virus_total_info["data"] %}  
+                            <li><strong>Reputation:</strong> {{ virus_total_info["data"][0]["attributes"]["reputation"] }}</li>
+                            {% if "regional_internet_registry" in virus_total_info["data"][0]["attributes"] %}
+                                <li><strong>Regional_internet_registry:</strong> {{ virus_total_info["data"][0]["attributes"]["regional_internet_registry"] }}</li>
+                            {% endif %}
+                            {% if "alphaMountain.ai" in virus_total_info["data"][0]["attributes"]["categories"] %}
+                                <li><strong>AlphaMountain.ai:</strong> {{ virus_total_info["data"][0]["attributes"]["categories"]["alphaMountain.ai"] }}</li>
+                            {% endif %}
+                            {% if "network" in virus_total_info["data"][0]["attributes"] %}
+                                <li><strong>Network:</strong> {{ virus_total_info["data"][0]["attributes"]["network"] }}</li>
+                            {% endif %}
+                            {% if "continent" in virus_total_info["data"][0]["attributes"] %}
+                                <li><strong>Continent:</strong> {{ virus_total_info["data"][0]["attributes"]["continent"] }}</li>
+                            {% endif %}
+                            {% if "as_owner" in virus_total_info["data"][0]["attributes"] %}
+                                <li><strong>As_owner:</strong> {{ virus_total_info["data"][0]["attributes"]["as_owner"] }}</li>
+                            {% endif %}
+                            {% if "Xcitium Verdict Cloud" in virus_total_info["data"][0]["attributes"]["categories"] %}
+                                <li><strong>Xcitium Verdict Cloud:</strong> {{ virus_total_info["data"][0]["attributes"]["categories"]["Xcitium Verdict Cloud"] }}</li>
+                            {% endif %}
+                            {% if "registrar" in virus_total_info["data"][0]["attributes"] %}
+                                <li>
+                                    <h3>Registrar:</h3>
+                                    <ul>
+                                        <li> {{ virus_total_info["data"][0]["attributes"]["registrar"] }}</li>
+                                    </ul>
+                                </li>
+                            {% endif %}
+                            {% if "categories" in virus_total_info["data"][0]["attributes"] %}
+                                {% if "malicious" in virus_total_info["data"][0]["attributes"]["categories"] %}
+                                    <li><strong>Categorii:</strong> {{ virus_total_info["data"][0]["attributes"]["categories"]["malicious"] }}</li>
+                                {% elif "spam" in virus_total_info["data"][0]["attributes"]["categories"] %}
+                                    <li><strong>Categorii:</strong> {{ virus_total_info["data"][0]["attributes"]["categories"]["spam"] }}</li>
+                                {% elif "benign" in virus_total_info["data"][0]["attributes"]["categories"] %}
+                                    <li><strong>Categorii:</strong> {{ virus_total_info["data"][0]["attributes"]["categories"]["benign"] }}</li>
+                                {% endif %}
+                            {% endif %}
+                            {% if "last_analysis_stats" in virus_total_info["data"][0]["attributes"] %}
+                                <li>
+                                    <h3>Last_analysis_stats:</h3>
+                                    <ul>
+                                        <li ><strong>Harmless:</strong> {{ virus_total_info["data"][0]["attributes"]["last_analysis_stats"]["harmless"] }}</li>
+                                        <li ><strong>Malicious:</strong> {{ virus_total_info["data"][0]["attributes"]["last_analysis_stats"]["malicious"] }}</li>
+                                        <li ><strong>Suspicious:</strong> {{ virus_total_info["data"][0]["attributes"]["last_analysis_stats"]["suspicious"] }}</li>
+                                        <li ><strong>Undected:</strong> {{ virus_total_info["data"][0]["attributes"]["last_analysis_stats"]["undetected"] }}</li>
+                                    </ul>
+                                </li>
+                            {% endif %}
+                            {% if "total_votes" in virus_total_info["data"][0]["attributes"] %}
+                                <li>
+                                    <h3>Total_votes:</h3>
+                                    <ul>
+                                        <li ><strong>Harmless:</strong> {{ virus_total_info["data"][0]["attributes"]["total_votes"]["harmless"] }}</li>
+                                        <li ><strong>Malicious:</strong> {{ virus_total_info["data"][0]["attributes"]["total_votes"]["malicious"] }}</li>
+                                    </ul>
+                                </li>
+                            {% endif %}
+                            {% if "sha1" in virus_total_info["data"][0]["attributes"] %}
+                                <li>
+                                    <h3>SHA-1:</h3>
+                                    <ul>
+                                        <li > {{ virus_total_info["data"][0]["attributes"]["sha1"] }}</li>
+                                    </ul>
+                                </li>
+                            {% endif %}
+                            {% if "sha256" in virus_total_info["data"][0]["attributes"] %}
+                                <li>
+                                    <h3>SHA-256:</h3>
+                                    <ul>
+                                        <li > {{ virus_total_info["data"][0]["attributes"]["sha256"] }}</li>
+                                    </ul>
+                                </li>
+                            {% endif %}
+                            {% if "md5" in virus_total_info["data"][0]["attributes"] %}
+                                <li>
+                                    <h3>MD5:</h3>
+                                    <ul>
+                                        <li > {{ virus_total_info["data"][0]["attributes"]["md5"] }}</li>
+                                    </ul>
+                                </li>
+                            {% endif %}
+                            {% if "signature_info" in virus_total_info["data"][0]["attributes"] %}
+                                <li>
+                                    <h3>Signature_info:</h3>
+                                    <ul>
+                                        <li ><strong>Copyright:</strong> {{ virus_total_info["data"][0]["attributes"]["signature_info"]["copyright"] }}</li>
+                                        <li ><strong>Description:</strong> {{ virus_total_info["data"][0]["attributes"]["signature_info"]["description"] }}</li>
+                                        <li ><strong>File version:</strong> {{ virus_total_info["data"][0]["attributes"]["signature_info"]["file version"] }}</li>
+                                        <li ><strong>Product:</strong> {{ virus_total_info["data"][0]["attributes"]["signature_info"]["product"] }}</li>
+                                    </ul>
+                                </li>
+                            {% endif %}
+                            {% if "trusted_verdict" in virus_total_info["data"][0]["attributes"] %}
+                                <li>
+                                    <h3>Trusted_verdict:</h3>
+                                    <ul>
+                                        <li><strong>Filename:</strong> {{ virus_total_info["data"][0]["attributes"]["trusted_verdict"]["filename"] }}</li>
+                                        <li><strong>Organization:</strong> {{ virus_total_info["data"][0]["attributes"]["trusted_verdict"]["organization"] }}</li>
+                                        <li><strong>Verdict:</strong> {{ virus_total_info["data"][0]["attributes"]["trusted_verdict"]["verdict"] }}</li>
+                                    </ul>
+                                </li>
+                            {% endif %}
+                            {% if "links" in virus_total_info["data"][0] %}
+                                <li><strong>Self:</strong> {{ virus_total_info["data"][0]["links"]["self"] }}</li>
+                            {% endif %}
+                            {% if "whois" in virus_total_info["data"][0]["attributes"] %}
+                                {% if "NetRange" in virus_total_info["data"][0]["attributes"]["whois"] %}
+                                <li><strong>NetRange:</strong> {{ virus_total_info["data"][0]["attributes"]["whois"].split("NetRange:")[1]|safe }}</li>
+                                {% endif %}
+                            {% endif %}
+                            {% if "whois" in virus_total_info["data"][0]["attributes"] %}
+                                <li><strong>whois:</strong> {{ virus_total_info["data"][0]["attributes"]["whois"] }}</li>
+                            {% endif %}
+                            {% if "whois" in virus_total_info["data"][0]["attributes"] %}
+                                {% if "Create date" in virus_total_info["data"][0]["attributes"]["whois"] %}
+                                <li style ="color:red"><strong>Create date:</strong> {{ virus_total_info["data"][0]["attributes"]["whois"].split("Create date:")[1]|safe }}</li>
+                                {% endif %}
+                            {% endif %}
+                            {% if "whois" in virus_total_info["data"][0]["attributes"] %}
+                                {% if "OrgName" in virus_total_info["data"][0]["attributes"]["whois"] %}
+                                <li ><strong>OrgName:</strong> {{ virus_total_info["data"][0]["attributes"]["whois"].split("OrgName:")[1]|safe }}</li>
+                                {% endif %}
+                            {% endif %}
+                            {% if "whois" in virus_total_info["data"][0]["attributes"] %}
+                                {% if "OrgId" in virus_total_info["data"][0]["attributes"]["whois"] %}
+                                <li ><strong>OrgId:</strong> {{ virus_total_info["data"][0]["attributes"]["whois"].split("OrgId:")[1]|safe }}</li>
+                                {% endif %}
+                            {% endif %}
+                            {% if "whois" in virus_total_info["data"][0]["attributes"] %}
+                                {% if "Comment" in virus_total_info["data"][0]["attributes"]["whois"] %}
+                                <li ><strong>Comment:</strong> {{ virus_total_info["data"][0]["attributes"]["whois"].split("Comment:")[1]|safe }}</li>
+                                {% endif %}
+                            {% endif %}
+                            {% if "whois" in virus_total_info["data"][0]["attributes"] %}
+                                {% if "Creation Date" in virus_total_info["data"][0]["attributes"]["whois"] %}
+                                <li style="color: red;"><strong>Creation Date:</strong> {{ virus_total_info["data"][0]["attributes"]["whois"].split("Creation Date:")[1]|safe }}</li>
+                                {% endif %}
+                            {% endif %}
+                            {% if "whois" in virus_total_info["data"][0]["attributes"] %}
+                                {% if "created" in virus_total_info["data"][0]["attributes"]["whois"] %}
+                                <li style="color: red;"><strong>Created:</strong> {{ virus_total_info["data"][0]["attributes"]["whois"].split("created:")[1]|safe }}</li>
+                                {% endif %}
+                            {% endif %}
+                            {% if "whois" in virus_total_info["data"][0]["attributes"] %}
+                                {% if "RegDate" in virus_total_info["data"][0]["attributes"]["whois"] %}
+                                <li class="red-RegDate"><strong>RegDate:</strong> {{ virus_total_info["data"][0]["attributes"]["whois"].split("RegDate:")[1]|safe }}</li>
+                                {% endif %}
+                            {% endif %}
+                            {% if "AlienVault" in virus_total_info["data"][0]["attributes"]["last_analysis_results"] %}
+                                <li>
+                                    <h3>AlienVault:</h3>
+                                    <ul>
+                                        <li class="blue-category"> Category:{{virus_total_info["data"][0]["attributes"]["last_analysis_results"]["AlienVault"]["category"]}}</li>
+                                        <li>Engine Name: {{ virus_total_info["data"][0]["attributes"]["last_analysis_results"]["AlienVault"]["engine_name"] }}</li>
+                                        <li>Method: {{ virus_total_info["data"][0]["attributes"]["last_analysis_results"]["AlienVault"]["method"] }}</li>
+                                        <li class="green-result">Result: {{ virus_total_info["data"][0]["attributes"]["last_analysis_results"]["AlienVault"]["result"] }}</li>
+                                    </ul>
+                                </li>
+                            {% endif %}
+                            {% if "Phishing Database" in virus_total_info["data"][0]["attributes"]["last_analysis_results"] %}
+                                <li>
+                                    <h3>Phishing Database:</h3>
+                                    <ul>
+                                        <li class="blue-category"> Category:{{virus_total_info["data"][0]["attributes"]["last_analysis_results"]["Phishing Database"]["category"]}}</li>
+                                        <li>Engine name: {{ virus_total_info["data"][0]["attributes"]["last_analysis_results"]["Phishing Database"]["engine_name"] }}</li>
+                                        <li>Method:{{ virus_total_info["data"][0]["attributes"]["last_analysis_results"]["Phishing Database"]["method"]}}</li>
+                                        <li class ="green-result"> Result:{{virus_total_info["data"][0]["attributes"]["last_analysis_results"]["Phishing Database"]["result"]}}</li>
+                                    </ul>
+                                </li>
+                            {% endif %}
+                            {% if "zvelo" in virus_total_info["data"][0]["attributes"]["last_analysis_results"] %}
+                                <li>
+                                    <h3>Zvelo:</h3>
+                                    <ul>
+                                        <li class="blue-category"> Category:{{virus_total_info["data"][0]["attributes"]["last_analysis_results"]["zvelo"]["category"]}}</li>
+                                        <li>Engine Name: {{ virus_total_info["data"][0]["attributes"]["last_analysis_results"]["zvelo"]["engine_name"] }}</li>
+                                        <li>Method: {{ virus_total_info["data"][0]["attributes"]["last_analysis_results"]["zvelo"]["method"] }}</li>
+                                        <li class="green-result">Result: {{ virus_total_info["data"][0]["attributes"]["last_analysis_results"]["zvelo"]["result"] }}</li>
+                                    </ul>
+                                </li>
+                            {% endif %}
+                            {% if "ADMINUSLabs" in virus_total_info["data"][0]["attributes"]["last_analysis_results"] %}
+                                <li>
+                                    <h3>ADMINUSLabs:</h3>
+                                    <ul>
+                                        <li class="blue-category"> Category:{{virus_total_info["data"][0]["attributes"]["last_analysis_results"]["ADMINUSLabs"]["category"]}}</li>
+                                        <li>Engine Name: {{ virus_total_info["data"][0]["attributes"]["last_analysis_results"]["ADMINUSLabs"]["engine_name"] }}</li>
+                                        <li>Method: {{ virus_total_info["data"][0]["attributes"]["last_analysis_results"]["ADMINUSLabs"]["method"] }}</li>
+                                        <li class="green-result">Result: {{ virus_total_info["data"][0]["attributes"]["last_analysis_results"]["ADMINUSLabs"]["result"] }}</li>
+                                    </ul>
+                                </li>
+                            {% endif %}
+                            {% if "malwares.com URL checker" in virus_total_info["data"][0]["attributes"]["last_analysis_results"] %}
+                                <li>
+                                    <h3>Malwares.com URL checker:</h3>
+                                    <ul>
+                                        <li class="blue-category"> Category:{{virus_total_info["data"][0]["attributes"]["last_analysis_results"]["malwares.com URL checker"]["category"]}}</li>
+                                        <li>Engine Name: {{ virus_total_info["data"][0]["attributes"]["last_analysis_results"]["malwares.com URL checker"]["engine_name"] }}</li>
+                                        <li>Method: {{ virus_total_info["data"][0]["attributes"]["last_analysis_results"]["malwares.com URL checker"]["method"] }}</li>
+                                        <li class="green-result">Result: {{ virus_total_info["data"][0]["attributes"]["last_analysis_results"]["malwares.com URL checker"]["result"] }}</li>
+                                    </ul>
+                                </li>
+                            {% endif %}
+                            {% if "Avira" in virus_total_info["data"][0]["attributes"]["last_analysis_results"] %}
+                                <li>
+                                    <h3>Avira:</h3>
+                                    <ul>
+                                        <li class="blue-category">Category:{{ virus_total_info["data"][0]["attributes"]["last_analysis_results"]["Avira"]["category"]}}</li>
+                                        <li>Engine name: {{ virus_total_info["data"][0]["attributes"]["last_analysis_results"]["Avira"]["engine_name"] }}</li>
+                                        <li>Method:{{virus_total_info["data"][0]["attributes"]["last_analysis_results"]["Avira"]["method"]}}</li>
+                                        <li class="green-result">Result:{{virus_total_info["data"][0]["attributes"]["last_analysis_results"]["Avira"]["result"]}}</li>
+                                    </ul>
+                                </li>
+                            {% endif %}
+                            {% if "Antiy-AVL" in virus_total_info["data"][0]["attributes"]["last_analysis_results"] %}
+                                <li>
+                                    <h3>Antiy-AVL:</h3>
+                                    <ul>
+                                        <li class="blue-category">Category:{{ virus_total_info["data"][0]["attributes"]["last_analysis_results"]["Antiy-AVL"]["category"]}}</li>
+                                        <li>Engine name: {{ virus_total_info["data"][0]["attributes"]["last_analysis_results"]["Antiy-AVL"]["engine_name"] }}</li>
+                                        <li>Method:{{virus_total_info["data"][0]["attributes"]["last_analysis_results"]["Antiy-AVL"]["method"]}}</li>
+                                        <li class="green-result">Result:{{virus_total_info["data"][0]["attributes"]["last_analysis_results"]["Antiy-AVL"]["result"]}}</li>
+                                    </ul>
+                                </li>
+                            {% endif %} 
+                            {% if malicious_ip %}
+                                <p>This IP address is considered malicious.</p>
+                            {% endif %}
+                            {% if "BitDefender" in virus_total_info["data"][0]["attributes"]["last_analysis_results"] %}
+                            <li>
+                                <h3>BitDefender:</h3>
+                                <ul>
+                                    <li class="blue-category">Category:{{ virus_total_info["data"][0]["attributes"]["last_analysis_results"]["BitDefender"]["category"]}}</li>
+                                    <li>Engine name: {{ virus_total_info["data"][0]["attributes"]["last_analysis_results"]["BitDefender"]["engine_name"] }}</li>
+                                    <li>Method:{{virus_total_info["data"][0]["attributes"]["last_analysis_results"]["BitDefender"]["method"]}}</li>
+                                    <li class="green-result">Result:{{virus_total_info["data"][0]["attributes"]["last_analysis_results"]["BitDefender"]["result"]}}</li>
+                                </ul>
+                            </li>
+                        {% endif %}         
+                        {% else %}
+                            <li>No data available.</li>
+                        {% endif %}
+                    </ul>
+                </li>
+                {% endif %}
+                {% if sha1_hash %}
+                    <li>
+                        <h3>File Hashes</h3>
+                        <ul>
+                            <li><strong>SHA-1 Hash:</strong> {{ sha1_hash }}</li>
+                            <li><strong>SHA-256 Hash:</strong> {{ sha256_hash }}</li>
+                            <li><strong>MD5 Hash:</strong> {{ md5_hash }}</li>
+                        </ul>
+                    </li>
+                {% endif %}
+            {% if abuseipdb_info %}
+                <li>
+                    <h3 style="color:red">AbuseIPDB</h3>
+                    <ul>
+                        {% if abuseipdb_info["data"] %}
+                            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/flag-icon-css/3.5.0/css/flag-icon.min.css">
+                            <li><strong>Abuse Confidence Score:</strong> {{ abuseipdb_info["data"]["abuseConfidenceScore"] }}</li>
+                            <li><strong>CountryCode:</strong> {{ abuseipdb_info["data"]["countryCode"] }}</li>
+                            <span class="flag-icon flag-icon-{{ abuseipdb_info['data']['countryCode']|lower }}"></span>
+                            <li><strong>Domain:</strong> {{ abuseipdb_info["data"]["domain"] }}</li>
+                            {% if "hostnames" in abuseipdb_info["data"] %}
+                                <li><strong>Hostname:</strong> {{ abuseipdb_info["data"]["hostnames"] }}</li>
+                            {% endif %}
+                            <li><strong>IpAddress:</strong> {{ abuseipdb_info["data"]["ipAddress"] }}</li>
+                            <li><strong>IpVersion:</strong> {{ abuseipdb_info["data"]["ipVersion"] }}</li>
+                            <li><strong>IsPublic:</strong> {{ abuseipdb_info["data"]["isPublic"] }}</li>
+                            <li><strong>IsTor:</strong> {{ abuseipdb_info["data"]["isTor"] }}</li>
+                            <li><strong>IsWhiteListened:</strong> {{ abuseipdb_info["data"]["isWhitelisted"] }}</li>
+                            <li><strong>Isp:</strong> {{ abuseipdb_info["data"]["isp"] }}</li>
+                            <li><strong>LastReportedAt:</strong> {{ abuseipdb_info["data"]["lastReportedAt"] }}</li>
+                            <li><strong>NumDistinctUsers:</strong> {{ abuseipdb_info["data"]["numDistinctUsers"] }}</li>
+                            <li><strong>TotalReports:</strong> {{ abuseipdb_info["data"]["totalReports"] }}</li>
+                            <li><strong>UsageType:</strong> {{ abuseipdb_info["data"]["usageType"] }}</li>
+                        {% else %}
+                            <li>No data available.</li>
+                        {% endif %}
+                    </ul>
+                </li>
+            {% endif %}
+            {% if urlscan_info %}
+                <li>
+                    <h3 style="color:red">UrlScan</h3>
+                    <ul>
+                        {% if urlscan_info["results"] %}
+                            {% for result in urlscan_info["results"] %}
+                                {% if "uniqCountries" in urlscan_info["results"][0]["stats"] %}
+                                    <li> <strong>UniqCountries:</strong>{{ urlscan_info["results"][0]["stats"]["uniqCountries"] }}</li>
+                                {% endif %}
+                                {% if "uniqIPs" in urlscan_info["results"][0]["stats"] %}
+                                    <li> <strong>UniqIPs:</strong>{{ urlscan_info["results"][0]["stats"]["uniqIPs"] }}</li>
+                                {% endif %}
+                                {% if "time" in urlscan_info["results"][0]["task"] %}
+                                    <li> <strong>Time:</strong>{{ urlscan_info["results"][0]["task"]["time"] }}</li>
+                                {% endif %}
+                                <li><strong>results:</strong> {{ result["result"] }}</li>
+                                {% if "apexDomain" in urlscan_info["results"][0]["page"] %}
+                                    <li> <strong>ApexDomain:</strong>{{ urlscan_info["results"][0]["page"]["apexDomain"] }}</li>
+                                {% endif %}
+                                {% if "country" in urlscan_info["results"][0]["page"] %}
+                                    <li> <strong>Country:</strong>{{ urlscan_info["results"][0]["page"]["country"] }}</li>
+                                {% endif %}
+                                {% if "domain" in urlscan_info["results"][0]["page"] %}
+                                    <li style="color:red"><strong>Domain:</strong> {{ result["page"]["domain"] }}</li>
+                                {% endif %}
+                                {% if "ip" in urlscan_info["results"][0]["page"] %}
+                                    <li ><strong>Ip:</strong> {{ result["page"]["ip"] }}</li>
+                                {% endif %}
+                                {% if "title" in urlscan_info["results"][0]["page"] %}
+                                    <li ><strong>Title:</strong> {{ result["page"]["title"] }}</li>
+                                {% endif %}
+                                {% if "tlsValidFrom" in urlscan_info["results"][0]["page"] %}
+                                    <li ><strong>ValidForm:</strong> {{ result["page"]["tlsValidFrom"] }}</li>
+                                {% endif %}
+                                {% if "tlsValidDays" in urlscan_info["results"][0]["page"] %}
+                                    <li ><strong>ValidDays:</strong> {{ result["page"]["tlsValidDays"] }}</li>
+                                {% endif %}
+                                {% if "url" in urlscan_info["results"][0]["page"] %}
+                                    <li ><strong>URL:</strong> {{ result["page"]["url"] }}</li>
+                                {% endif %}
+                                {% if "visibility" in urlscan_info["results"][0]["task"] %}
+                                    <li ><strong>Visibility:</strong> {{ result["task"]["visibility"] }}</li>
+                                {% endif %}
+                                {% if "screenshot" in result %}
+                                    <li><img src="{{ result['screenshot'] }}" alt="Screenshot"></li>
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <li>No data available.</li>
+                        {% endif %}
+                    </ul>
+                </li>
+            {% endif %}
+        </ul>
+    </div>
+</body>
+</html>
