@@ -1,4 +1,7 @@
 # AppPython
+
+
+![project](https://github.com/CDoris114/AppPython/assets/96770565/dd1795c5-c01e-4f45-9708-e420e6086363)
   The "CDN TOOL: Crafting, Delving, Navigating the Network" application consists of combining a flask with html in order to obtain information about ips, domains, hashes, being
 connected to the APIs of the 3 programs, these being: Virus Total, AbuseIpdb and UrlScan.
 In order to generate my information, calls made on the basis of APIs are registered in the database of the programs, thus for any ip, domain, hash searched,
